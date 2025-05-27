@@ -9,7 +9,7 @@ export const createClient = () => {
 }
 
 export const createServerClientSupabase = async () => {
-  const cookieStore = await cookies() // await here!
+  const cookieStore = await cookies() 
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -11,9 +11,17 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react"
 import Link from "next/link"
 
+
+import {createClient} from '@/lib/supabaseClient'
+import { useRouter } from 'next/navigation'
+
+
 export default function RegisterPage() {
+  const supabase = createClient()
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -23,12 +31,39 @@ export default function RegisterPage() {
     agreeToTerms: false,
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle registration logic here
-    console.log("Registration attempt:", formData)
-  }
 
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+  
+   
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.")
+      return
+    }
+  
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+          }
+        }
+      })
+  
+      if (error) {
+        setError(error.message)
+      } else {
+        router.push("/auth/login")
+      }
+    } catch (err) {
+      setError("An unexpected error occurred.")
+      console.error(err)
+    }
+  }
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -145,27 +180,16 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="terms"
-                  checked={formData.agreeToTerms}
-                  onCheckedChange={(checked) => setFormData({ ...formData, agreeToTerms: checked as boolean })}
-                  required
-                />
-                <Label htmlFor="terms" className="text-sm">
-                  I agree to the{" "}
-                  <Link href="/terms" className="text-blue-600 hover:text-blue-500">
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link href="/privacy" className="text-blue-600 hover:text-blue-500">
-                    Privacy Policy
-                  </Link>
-                </Label>
-              </div>
+             
             </CardContent>
-            <CardFooter>
-              <Button type="submit" className="w-full" disabled={!formData.agreeToTerms}>
+            <CardFooter className="mt-4">
+                      {error && (
+            <div className="text-red-500 text-sm text-center">
+              {error}
+            </div>
+          )}
+
+              <Button type="submit" className="w-full">
                 Create account
               </Button>
             </CardFooter>

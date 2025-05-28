@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabaseClient'
 import { useAppSelector } from '@/store'
 import { useAppDispatch } from '@/store'
-
+import { Separator } from '@/components/ui/separator'
 import { clearUser } from '@/features/userSlice'
 
 interface NavBarProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -26,15 +26,15 @@ export function NavBar({ className, ...props }: NavBarProps) {
       {...props}
     >
       <div className="flex items-center gap-4">
-        <Menu className="h-6 w-6 md:hidden" />
         <Link href="/" className="text-3xl font-bold text-blue-600">
           DevBlog
         </Link>
-      </div>
-      <div className="hidden md:flex items-center gap-6">
-        <Link href="/blogs" className="hover:underline">
-          Your Blogs
-        </Link>
+        <Separator orientation="vertical" className="min-h-full" />
+        {user.isLoggedIn && (
+          <Link href="/blogs" className="hover:underline">
+            Your Blogs
+          </Link>
+        )}
       </div>
 
       {user.isLoggedIn ? (

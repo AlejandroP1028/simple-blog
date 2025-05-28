@@ -12,6 +12,7 @@ import { addBlogFunc } from '@/lib/blogFunctions'
 import { createClient } from '@/lib/supabaseClient'
 import NavBar from '@/components/nav-bar'
 import Link from 'next/link'
+import Pagination from '@/components/pagination'
 
 export default function HomePage() {
   const dispatch = useAppDispatch()
@@ -126,33 +127,9 @@ export default function HomePage() {
     // fetchBlogs will be called by useEffect
   }
 
-  const handleAddSampleBlog = () => {
-    if (!user.isLoggedIn) {
-      alert('Please log in to add a blog post.')
-      return
-    }
-
-    addBlogFunc(
-      dispatch,
-      {
-        id: Date.now().toString(),
-        title: `Sample Blog Post ${Date.now()}`,
-        excerpt: 'This is a sample blog post excerpt that gives readers a preview of the content.',
-        content:
-          'This is the full content of the sample blog post. It contains detailed information about the topic.',
-        user_id: user.id as string,
-      },
-      setLoading
-    ).then(() => {
-      // Refresh the current page after adding a blog
-      fetchBlogs(currentPage, searchTerm)
-    })
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
-
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -168,21 +145,11 @@ export default function HomePage() {
                 <Button asChild size="lg" variant="secondary">
                   <Link href="/create">Start Writing</Link>
                 </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="bg-transparent border-white text-white hover:bg-white hover:text-blue-600"
-                  onClick={handleAddSampleBlog}
-                  disabled={loading}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  {loading ? 'Adding...' : 'Quick Add Sample'}
-                </Button>
               </div>
             ) : (
               <div className="flex gap-4 justify-center">
                 <Button asChild size="lg" variant="secondary">
-                  <Link href="/register">Get Started</Link>
+                  <Link href="/auth/register">Get Started</Link>
                 </Button>
                 <Button
                   asChild
@@ -190,7 +157,7 @@ export default function HomePage() {
                   variant="outline"
                   className="bg-transparent border-white text-white hover:bg-white hover:text-blue-600"
                 >
-                  <Link href="/login">Sign In</Link>
+                  <Link href="/auth/login">Sign In</Link>
                 </Button>
               </div>
             )}
@@ -244,81 +211,12 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
-                  disabled={currentPage === 1 || loading}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  Previous
-                </Button>
-
-                <div className="flex gap-1">
-                  {/* Show page numbers with ellipsis for large page counts */}
-                  {(() => {
-                    const pages = []
-                    const showEllipsis = totalPages > 7
-
-                    if (!showEllipsis) {
-                      // Show all pages if 7 or fewer
-                      for (let i = 1; i <= totalPages; i++) {
-                        pages.push(i)
-                      }
-                    } else {
-                      // Show first page, current page area, and last page with ellipsis
-                      if (currentPage <= 4) {
-                        for (let i = 1; i <= 5; i++) pages.push(i)
-                        pages.push('...')
-                        pages.push(totalPages)
-                      } else if (currentPage >= totalPages - 3) {
-                        pages.push(1)
-                        pages.push('...')
-                        for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i)
-                      } else {
-                        pages.push(1)
-                        pages.push('...')
-                        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i)
-                        pages.push('...')
-                        pages.push(totalPages)
-                      }
-                    }
-
-                    return pages.map((page, index) =>
-                      page === '...' ? (
-                        <span key={`ellipsis-${index}`} className="px-3 py-1 text-gray-500">
-                          ...
-                        </span>
-                      ) : (
-                        <Button
-                          key={page}
-                          variant={currentPage === page ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => handlePageChange(page as number)}
-                          className="w-10"
-                          disabled={loading}
-                        >
-                          {page}
-                        </Button>
-                      )
-                    )
-                  })()}
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
-                  disabled={currentPage === totalPages || loading}
-                >
-                  Next
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              loading={loading}
+              onPageChange={handlePageChange}
+            />
           </>
         ) : (
           !loading && (
@@ -350,17 +248,14 @@ export default function HomePage() {
                         Create Your First Post
                       </Link>
                     </Button>
-                    <Button variant="outline" onClick={handleAddSampleBlog} disabled={loading}>
-                      {loading ? 'Adding...' : 'Add Sample Post'}
-                    </Button>
                   </div>
                 ) : (
                   <div className="flex gap-3 justify-center">
                     <Button asChild>
-                      <Link href="/register">Get Started</Link>
+                      <Link href="/auth/register">Get Started</Link>
                     </Button>
                     <Button asChild variant="outline">
-                      <Link href="/login">Sign In</Link>
+                      <Link href="/auth/login">Sign In</Link>
                     </Button>
                   </div>
                 )}

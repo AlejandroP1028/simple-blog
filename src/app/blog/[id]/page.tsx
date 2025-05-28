@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useAppSelector } from '@/store'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -11,14 +11,14 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { createClient } from '@/lib/supabaseClient'
 import NavBar from '@/components/nav-bar'
 import Link from 'next/link'
+import { Blog } from '@/lib/types'
 
 export default function BlogPostPage() {
   const params = useParams()
-  const router = useRouter()
   const user = useAppSelector((state) => state.user)
   const supabase = createClient()
 
-  const [blog, setBlog] = useState<any | null>(null)
+  const [blog, setBlog] = useState<Blog | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -134,7 +134,7 @@ export default function BlogPostPage() {
                     </p>
                     <div className="flex items-center gap-1 text-sm text-gray-500">
                       <Calendar className="h-4 w-4" />
-                      <span>{formatDate(blog.created_at)}</span>
+                      <span>{formatDate(blog.created_at!)}</span>
                     </div>
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Blog } from '@/lib/types'
 import { Card, CardHeader, CardContent, CardTitle, CardFooter } from './ui/card'
-import { Badge } from './ui/badge'
+
 import { Avatar, AvatarFallback } from './ui/avatar'
 import Link from 'next/link'
 import { Calendar } from 'lucide-react'

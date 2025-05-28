@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Menu } from 'lucide-react'
+
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabaseClient'
@@ -10,9 +10,7 @@ import { useAppDispatch } from '@/store'
 import { Separator } from '@/components/ui/separator'
 import { clearUser } from '@/features/userSlice'
 
-interface NavBarProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-export function NavBar({ className, ...props }: NavBarProps) {
+export function NavBar({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.user)
   const router = useRouter()

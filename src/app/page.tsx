@@ -7,8 +7,8 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import BlogCard from '@/components/blog-card'
-import { Search, ChevronLeft, ChevronRight, Plus, Loader2 } from 'lucide-react'
-import { addBlogFunc } from '@/lib/blogFunctions'
+import { Search, Plus, Loader2 } from 'lucide-react'
+
 import { createClient } from '@/lib/supabaseClient'
 import NavBar from '@/components/nav-bar'
 import Link from 'next/link'
@@ -29,7 +29,6 @@ export default function HomePage() {
 
   // Calculate pagination values
   const totalPages = Math.ceil(totalCount / blogsPerPage)
-  const startIndex = (currentPage - 1) * blogsPerPage
 
   // Fetch blogs with pagination and search
   const fetchBlogs = async (page: number, search = '') => {

@@ -7,8 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +40,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { setBlogs, removeBlog } from '@/features/blogSlice'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Blog } from '@/lib/types'
 
 export default function YourBlogsPage() {
   const router = useRouter()
@@ -50,13 +50,12 @@ export default function YourBlogsPage() {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(false)
-  const [blogs, setUserBlogs] = useState<any[]>([])
-  const [activeTab, setActiveTab] = useState('all')
+  const [blogs, setUserBlogs] = useState<Blog[]>([])
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [blogToDelete, setBlogToDelete] = useState<string | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [blogToEdit, setBlogToEdit] = useState<any | null>(null)
+  const [blogToEdit, setBlogToEdit] = useState<Blog | null>(null)
   const [editFormData, setEditFormData] = useState({
     title: '',
     excerpt: '',
@@ -149,7 +148,7 @@ export default function YourBlogsPage() {
   }
 
   // Handle edit blog
-  const handleEditClick = (blog: any) => {
+  const handleEditClick = (blog: Blog) => {
     setBlogToEdit(blog)
     setEditFormData({
       title: blog.title,
@@ -295,19 +294,13 @@ export default function YourBlogsPage() {
                           <div className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
                             <span>
-                              {new Date(blog.created_at).toLocaleDateString(undefined, {
+                              {new Date(blog.created_at!).toLocaleDateString(undefined, {
                                 year: 'numeric',
                                 month: 'short',
                                 day: 'numeric',
                               })}
                             </span>
                           </div>
-                          {blog.views !== undefined && (
-                            <div className="flex items-center gap-1">
-                              <Eye className="h-4 w-4" />
-                              <span>{blog.views || 0} views</span>
-                            </div>
-                          )}
                         </div>
                       </div>
                       <DropdownMenu>

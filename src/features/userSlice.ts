@@ -1,12 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface UserState {
-  id: string | null
-  email: string | null
-  firstName?: string
-  lastName?: string
-  isLoggedIn: boolean
-}
+import { UserState } from '@/lib/types' 
 
 const initialState: UserState = {
   id: null,

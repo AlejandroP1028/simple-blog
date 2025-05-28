@@ -15,7 +15,7 @@ export default function Home() {
       <p className="mb-4">Click the button below to add a new blog post.</p>
       <Button
         onClick={() =>
-          dispatch(addBlog({ id: Date.now().toString(), title: 'New Blog', content: '...' }))
+          dispatch(addBlog({ id: Date.now().toString(), title: 'New Blog', excerpt: '',content: '...' }))
         }
       >
         Add Blog

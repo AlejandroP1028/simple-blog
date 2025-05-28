@@ -1,11 +1,6 @@
 // app/lib/features/blogSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-type Blog = {
-  id: string
-  title: string
-  content: string
-}
+import { Blog } from '@/lib/types' 
 
 interface BlogState {
   blogs: Blog[]

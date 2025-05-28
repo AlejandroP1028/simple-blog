@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { createClient } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
-
+import { useAppDispatch, useAppSelector } from "@/store"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,11 +11,13 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Eye, EyeOff, Mail, Lock } from "lucide-react"
 import Link from "next/link"
+import { setUser } from "@/features/userSlice"
 
 export default function LoginPage() {
   const supabase = createClient()
   const router = useRouter()
-
+  const dispatch = useAppDispatch()
+  const user = useAppSelector((state) => state.user)
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     email: "",
@@ -42,9 +44,20 @@ export default function LoginPage() {
       return
     }
 
-    // Optionally handle "remember me" logic here with localStorage, etc.
-    // For now just redirect:
-    router.push("/") // Redirect to homepage or dashboard after successful login
+
+    if (data.user) {
+      console.log("User logged in:", data.user)
+      dispatch(setUser({
+        id: data.user.id,
+        email: data.user.email || null,
+        firstName: data.user.user_metadata.first_name || "",
+        lastName: data.user.user_metadata.last_name || "",
+      }))
+     console.log("User state updated:", user)
+    }
+
+   
+    router.push("/") 
   }
 
   return (
